@@ -1,0 +1,312 @@
+1
+00:00:01,210 --> 00:00:09,910
+So, you can go to "http://github.com/kubernetes/kops" here there is download the latest release,
+
+2
+00:00:11,700 --> 00:00:26,270
+and you can download the "kops-linux-amd64", copy link address, and then I can download this "kops-linux-amd64" on this machine.
+
+3
+00:00:26,290 --> 00:00:29,900
+This download, I can "chmod +x kops-linux-amd64", plus executable flag.
+
+4
+00:00:38,380 --> 00:00:43,950
+So they can execute it and I can move this to "/usr/local/bin/kops-linux-amd64"
+
+5
+00:00:44,230 --> 00:00:53,650
+I have to use a "Sudo". And then, I'm going to download "python-pip", because "python-pip" will allow me install "awscli".
+
+6
+00:00:53,700 --> 00:01:00,700
+The "awscli" I will also need before I set up this cluster on AWS.
+
+7
+00:01:02,680 --> 00:01:15,550
+So, this is installed, I should be able to do "pip install awscli"
+
+8
+00:01:15,550 --> 00:01:16,910
+And this should give me the command of hight utility, called aws that I will be able to use.
+
+9
+00:01:16,930 --> 00:01:20,030
+So, now I type "aws". I can now execute commands with AWS.
+
+10
+00:01:20,040 --> 00:01:25,610
+If you don't have an aws account yet, open one, "http://aws.amazon.com", create an AWS account, and when you create your account you will automatically get the free tiar.
+
+11
+00:01:25,690 --> 00:01:31,390
+Once you open your aws account, you will see a screen like this.
+
+12
+00:01:43,130 --> 00:01:45,380
+These are all the servers that you can use in aws.
+
+13
+00:01:45,560 --> 00:01:52,850
+You need to go to "Identity and Access Management", because we are going to create a user first, so that kops can deploy Kubernetes.
+
+14
+00:01:55,830 --> 00:01:57,610
+So, "Identity and Access Management".
+
+15
+00:01:58,060 --> 00:02:09,440
+You go to "Users", "Create New User", call it "kops", and you are going to generate an access key for this user.
+
+16
+00:02:09,440 --> 00:02:15,310
+These are the access that you need to configure aws on your new machine.
+
+17
+00:02:15,320 --> 00:02:17,770
+So, remember you just installed it aws command utility.
+
+18
+00:02:20,390 --> 00:02:28,410
+What we're going to do now is, we go into the shell of our VM, where we installed aws command utility.
+
+19
+00:02:28,460 --> 00:02:37,400
+I am going to type, "aws configure" it will open your access key and for the aws, "Secret" access key,
+
+20
+00:02:38,060 --> 00:02:42,340
+both are printed when you were creating this user.
+
+21
+00:02:42,670 --> 00:02:48,930
+You can specify default region or add an input format, but that's not necessary. So, that's it.
+
+22
+00:02:48,940 --> 00:02:57,940
+Now what the aws utility did actually created these files in the AWS.
+
+23
+00:02:57,940 --> 00:03:02,760
+Our credentials are now configured, so we can now use AWS.
+
+24
+00:03:02,800 --> 00:03:08,470
+One more thing we need to do, is we need to give our user, our kops user we just created permissions.
+
+25
+00:03:08,680 --> 00:03:13,370
+we should give it administrator permissions, so we close this.
+
+26
+00:03:18,910 --> 00:03:23,300
+Go to our new user, and we're going to attach a policy,
+
+27
+00:03:23,530 --> 00:03:26,350
+and we are going to give it administrator access.
+
+28
+00:03:26,340 --> 00:03:28,320
+You click, attach policy.
+
+29
+00:03:28,320 --> 00:03:34,840
+And now our kops user has administrator access. You could also give less permission to kops, but then you have to do it manually.
+
+30
+00:03:36,580 --> 00:03:42,070
+So, the easiest way is to give the administrator access, if you're concerned about giving too much access
+
+31
+00:03:42,130 --> 00:03:46,510
+to your kops user, you can always change it into only what it needs.
+
+32
+00:03:47,720 --> 00:03:53,730
+Next, I'm going to go back to the welcome screen, and I'm going to go to "S3".
+
+33
+00:03:53,770 --> 00:04:00,260
+"S3" is an object store, you can compare it with Google Drive, or a drop box, and you're going to create a new bucket,
+
+34
+00:04:00,260 --> 00:04:07,940
+and this bucket is going to be used for kops state.
+
+35
+00:04:08,030 --> 00:04:11,890
+And I am just going to add some random string at the end, which you also should do, and you also should make it random.
+
+36
+00:04:14,330 --> 00:04:21,680
+Because this bucket named needs to be unique in Amazon, in that region this region.
+
+37
+00:04:21,680 --> 00:04:25,450
+This region that you specified here going to be the region where you want to deploy your cluster.
+
+38
+00:04:25,460 --> 00:04:30,740
+So, if you want to deploy cluster in Ireland, you should choose the Ireland region.
+
+39
+00:04:30,740 --> 00:04:37,980
+So, depending on where you are, you can choose a different bucket. If you don't know what region to choose,
+
+40
+00:04:38,020 --> 00:04:42,420
+there's a tool "CloudPing.info", http thing. For me, Europe and Frankfurt are the closest ones.
+
+41
+00:04:42,570 --> 00:04:48,500
+I am going to go with Ireland. You are going to do this from different locations, so you're going to see different results.
+
+42
+00:04:48,870 --> 00:04:53,120
+I am going to choose Ireland, I am going to click "Create", and now I have my kops bucket.
+
+43
+00:04:57,100 --> 00:05:06,240
+Next is the DNS, so kops is also going to set the DNS for us,
+
+44
+00:05:06,240 --> 00:05:15,900
+but first we need to set up a domain for that, a subdomain, so you can use route 53 for that.
+
+45
+00:05:15,900 --> 00:05:17,430
+Route 53 allows you to do DNS management.
+
+46
+00:05:17,460 --> 00:05:23,260
+kops expect you to enter a subdomain, and kops will manage a subdomain for you,
+
+47
+00:05:23,260 --> 00:05:28,990
+but you already need to create this zone in route 53 so that kops can manage it for you.
+
+48
+00:05:29,020 --> 00:05:34,810
+You can either register a new domain name here on Amazon or even somewhere cheaper, you can get some for a couple of bucks.
+
+49
+00:05:36,320 --> 00:05:41,240
+There are also free solutions, so you don't need to spend money for a domain name.
+
+50
+00:05:41,350 --> 00:05:48,220
+There is a ".dk" and there is also a provider to give you subdomains that you can use in Route 53,
+
+51
+00:05:48,220 --> 00:05:51,500
+so you don't need to spend money if you don't want.
+
+52
+00:05:51,520 --> 00:05:54,340
+If you don't have a domain name, it's probably the easiest way to just go for something free.
+
+53
+00:05:54,430 --> 00:05:58,590
+Have a look at the procedure documents, I listed some free solutions there.
+
+54
+00:05:58,600 --> 00:06:03,480
+I have my own domain name, so I'm going to get started here with DNS management.
+
+55
+00:06:03,790 --> 00:06:05,890
+I'm going to create a hosted zone.
+
+56
+00:06:05,890 --> 00:06:12,370
+Even if you have your own domain name, or if you opt for one of the free solutions, you still need to create this hosted zone.
+
+57
+00:06:14,230 --> 00:06:19,390
+And this is actually going to cost you some money right now just cost you a half a dollar per month to create that zone.
+
+58
+00:06:21,100 --> 00:06:25,960
+So, if you don't want to spend any money at all, you might just want to run minikube, maybe kops is not the solution for you.
+
+59
+00:06:28,680 --> 00:06:35,580
+So, I'm going to click "Create Hosted Zone" and I am going to use "kubernetes.newtech.academy".
+
+60
+00:06:35,760 --> 00:06:38,090
+I have a domain in "newtech.academy".
+
+61
+00:06:38,250 --> 00:06:48,900
+So, what I will do is, I will make sure that, "kubernetes.newtech.academy" is going to forward to Route 53.
+
+62
+00:06:48,900 --> 00:06:53,180
+And, to make it forward, I need to specify these values here.
+
+63
+00:06:53,250 --> 00:06:58,670
+And those are going to be different for you as name servers for this subdomain.
+
+64
+00:06:58,830 --> 00:07:04,720
+My domain is hosted at "namecheap", so I have to go to "namecheap",
+
+65
+00:07:04,730 --> 00:07:07,470
+tell "namecheap" that "kubernet.newtech.academy" is hosted by Route 53,
+
+66
+00:07:09,030 --> 00:07:11,010
+and these are the name servers.
+
+67
+00:07:11,030 --> 00:07:16,140
+You'll easily find that, if you buying a domain, it's quite straightforward to make those changes.
+
+68
+00:07:18,530 --> 00:07:20,610
+Just to show you how it works with "namedcheap".
+
+69
+00:07:20,930 --> 00:07:23,870
+You have something called Advanced DNS,
+
+70
+00:07:24,170 --> 00:07:32,180
+and here I added four new records for Kubernetes, for these domain names, so that I have ""kubernet.newtech.academy" and  they point to the Route 53 name servers.
+
+71
+00:07:38,060 --> 00:07:45,780
+So, I did at "New record", "NS Records", Kubernetes as a "Host", and whatever "Name Server" that you will see.
+
+72
+00:07:47,210 --> 00:07:52,380
+So, if you do this yourself, don't take these names services, but that ones that you see when you add a record in Amazon.
+
+73
+00:07:52,420 --> 00:07:57,430
+If you use something else, that "namecheap", for instance, a free ".dk" name,
+
+74
+00:07:57,500 --> 00:08:03,930
+this will look a little bit different, but it's the same principle.
+
+75
+00:08:03,920 --> 00:08:09,970
+You will have add an "NS Record" for a domain, or a subdomain, to be able to make this work.
+
+76
+00:08:10,910 --> 00:08:17,810
+Once we set up the DNS, kops is going to manage the DNS for us using route 53.
+
+77
+00:08:17,810 --> 00:08:24,690
+So, now we have done all the preparation and we can finally start launching our cluster using kops.
+
+78
+00:08:24,740 --> 00:08:27,250
+And that I will show you in the next demo.
+

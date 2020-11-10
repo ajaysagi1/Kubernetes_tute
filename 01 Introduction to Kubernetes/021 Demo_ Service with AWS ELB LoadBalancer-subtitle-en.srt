@@ -1,0 +1,184 @@
+1
+00:00:00,400 --> 00:00:09,500
+In this demo, I'll be running the first app behind a load balancer. I'm again going to log  into my vagrant box.
+
+2
+00:00:09,920 --> 00:00:19,160
+The same one I used to spin up my AWS Kubernetes cluster with kops
+
+3
+00:00:19,250 --> 00:00:20,220
+I have the Kubernetes course cloned right here.
+
+4
+00:00:20,600 --> 00:00:25,480
+If you haven't downloaded the course from git hub yet, have a look at the procedure document.
+
+5
+00:00:25,990 --> 00:00:31,760
+So, here I have two files I want to use
+
+6
+00:00:31,940 --> 00:00:40,880
+The first one is our "helloworld.yml", the pod, and I edited here the name.
+
+7
+00:00:40,880 --> 00:00:41,910
+So, it's still running on Port 3000, I just edited the name, "nodes-port"
+
+8
+00:00:41,930 --> 00:00:47,090
+Which you can then reuse in the service
+
+9
+00:00:47,210 --> 00:00:53,200
+So our service is going to be of type "LoadBalancer", which in our case is going to be an Elastic Load Balancer on AWS
+
+10
+00:00:53,290 --> 00:01:02,150
+It will be automatically created for us. Port is going to be 80, the standard HTTP
+
+11
+00:01:02,150 --> 00:01:11,600
+and the target port is going to be the "nodejs-port", then Kubernetes knows that it needs to go to this container
+
+12
+00:01:11,630 --> 00:01:17,480
+The protocol is TCP, the selector is going to refer to our apps, so we have app "helloworld".
+
+13
+00:01:17,520 --> 00:01:27,120
+it's going to be the service for the pod with the label app "helloworld".
+
+14
+00:01:27,290 --> 00:01:36,130
+I am going to run this "kubectl create -f" of the pod, and then of the service.
+
+15
+00:01:36,140 --> 00:01:41,370
+So, this takes some time, while is setting up, let's have a look in the AWS console.
+
+16
+00:01:42,880 --> 00:01:52,040
+Here on the main page and I go to "EC2" and we have now all one load balancer running.
+
+17
+00:01:52,060 --> 00:02:03,070
+So, this load balancer is internet facing, it's running on "Port 80", and it's going to refer to our three instances.
+
+18
+00:02:03,070 --> 00:02:07,020
+Those three instances will route the traffic to our pod.
+
+19
+00:02:07,180 --> 00:02:10,370
+That's why you'll be asked all three of them.
+
+20
+00:02:10,400 --> 00:02:13,300
+The ELB doesn't know exactly where the pod is running.
+
+21
+00:02:13,300 --> 00:02:19,310
+So it just add all three of them and every node will then redirect traffic to where the pod is.
+
+22
+00:02:19,310 --> 00:02:22,620
+Because, they know where the pod is.
+
+23
+00:02:22,780 --> 00:02:25,480
+There's a health check on the Port.
+
+24
+00:02:25,660 --> 00:02:28,750
+So, this is a node port and it's exposed on every node.
+
+25
+00:02:28,870 --> 00:02:33,590
+And that will be the port that is used by ELB.
+
+26
+00:02:33,820 --> 00:02:42,190
+So, the mapping is from "Port 80" on the ELB itself and it goes to the "Instance Port 32162" to the node itself.
+
+27
+00:02:42,190 --> 00:02:50,810
+And then on the node, it will redirect the traffic to the correct pod.
+
+28
+00:02:50,810 --> 00:02:52,080
+This ELB has a DNS name.
+
+29
+00:02:52,280 --> 00:03:00,550
+So, what you can actually do is if you go to "Route 53" these are routed records for Kubernetes zone.
+
+30
+00:03:00,940 --> 00:03:09,260
+I can create a new record and I can say, "helloworld.kubernetes"
+
+31
+00:03:09,260 --> 00:03:16,850
+and I can say this is an AWS for our load balancer. So, I can create this
+
+32
+00:03:20,130 --> 00:03:29,760
+and then I can actually use this to directly go to the load balancer and directly to my app.
+
+33
+00:03:30,270 --> 00:03:35,870
+If we go to "http://helloworld.kubernetes.newtech.academy"
+
+34
+00:03:35,880 --> 00:03:37,440
+You can see "Hello World!"
+
+35
+00:03:37,440 --> 00:03:46,440
+So, our "Route 53", "helloworld.kubernetes.newtech.academy" goes to our load balancer.
+
+36
+00:03:46,440 --> 00:03:52,730
+Our load balancer redirects the traffic from "Port 80" to one of those three notes on this instance port.
+
+37
+00:03:52,830 --> 00:03:56,560
+And then the traffic is redirected to pod,
+
+38
+00:03:56,990 --> 00:03:57,740
+which then gives, "Hello World!"
+
+39
+00:04:00,680 --> 00:04:08,090
+If you would go to the Security Groups, you would also see that
+
+40
+00:04:08,200 --> 00:04:12,600
+we have a new security group for our Load Balancer which is right here, ELB.
+
+41
+00:04:12,890 --> 00:04:19,870
+And then, if you go to nodes or even the Master you see that this one end is "2a"
+
+42
+00:04:23,890 --> 00:04:31,720
+We have all traffic open between our Kubernetes nodes and the Load Balancer.
+
+43
+00:04:31,820 --> 00:04:34,860
+So, the Load Balancer can access our Kubernetes cluster
+
+44
+00:04:34,950 --> 00:04:36,490
+So, that's it for this demo.
+
+45
+00:04:36,600 --> 00:04:44,070
+Now, we can actually create apps on Kubernetes that you can expose to the Internet
+
+46
+00:04:44,200 --> 00:04:45,570
+using the Elastic Load Balancer of Amazon.
+

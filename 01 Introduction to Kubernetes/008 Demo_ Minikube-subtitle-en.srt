@@ -1,0 +1,308 @@
+1
+00:00:00,960 --> 00:00:08,920
+In this demo, I will show you how to do local Kubernetes set up using minikube.
+
+2
+00:00:08,980 --> 00:00:14,830
+The first step is to go to "http://github.com/kubernetes/minikube".
+
+3
+00:00:15,560 --> 00:00:21,550
+Here, you have the minikube repository to run Kubernetes locally.
+
+4
+00:00:21,550 --> 00:00:22,720
+So, What's minikube?
+
+5
+00:00:22,960 --> 00:00:26,400
+That's what I already explained in previous lecture.
+
+6
+00:00:26,440 --> 00:00:31,180
+Here, you have the link to the latest release, so if you click on latest release,
+
+7
+00:00:31,180 --> 00:00:39,340
+then you're going to go to the release page, and the latest release at this time is v0.12.2.
+
+8
+00:00:39,550 --> 00:00:44,800
+There are probably be already a new release, when you look at this page, but the installation instructions
+
+9
+00:00:44,860 --> 00:00:46,680
+shouldn't really change much.
+
+10
+00:00:47,110 --> 00:00:49,000
+I have OSX.
+
+11
+00:00:49,120 --> 00:00:51,960
+So, I'm just going to copy paste this comment.
+
+12
+00:00:52,180 --> 00:00:54,210
+If you are Linux you can use this command.
+
+13
+00:00:54,400 --> 00:00:59,700
+If you are windows you can download the "minikube-windows.exe".
+
+14
+00:01:00,400 --> 00:01:04,630
+If you're a Windows you still need to rename it to "minikube.exe".
+
+15
+00:01:05,230 --> 00:01:07,670
+And you need to add it to your path.
+
+16
+00:01:07,750 --> 00:01:14,650
+The easiest way is to just save it, so the easiest way is to just save it into a directory, and then "CD"
+
+17
+00:01:14,680 --> 00:01:20,350
+to the path, and you can execute "minikube.exe". If you want some more information about the Windows installation minikube,
+
+18
+00:01:21,290 --> 00:01:26,470
+just have a look at the procedure document where you can find extra information.
+
+19
+00:01:26,480 --> 00:01:30,750
+I'm using Mac, so I will just execute this command.
+
+20
+00:01:30,760 --> 00:01:32,550
+I opened a terminal on my Mac.
+
+21
+00:01:32,560 --> 00:01:37,960
+If you don't know how, you just do "command+space" and you type terminal, enter. And then, you see something like this.
+
+22
+00:01:41,020 --> 00:01:45,480
+Copy and paste command. It will then download approximately 80 megabytes.
+
+23
+00:01:45,690 --> 00:01:51,320
+Once the download is complete, it will ask you to enter your Mac OS password,
+
+24
+00:01:51,320 --> 00:02:00,500
+or on linux, your root password, because we are moving, because we are moving this minikube to user a local bin.
+
+25
+00:02:00,580 --> 00:02:09,120
+So, I just ended my password, and minikube is now available. So, I can started with minikube start.
+
+26
+00:02:10,670 --> 00:02:13,640
+So, I am starting a local Kubernetes cluster.
+
+27
+00:02:13,650 --> 00:02:23,260
+This might take some time, because it needs to boot up the virtual machine. So, this now set up our Kubernetes cluster,
+
+28
+00:02:23,310 --> 00:02:32,920
+and it says "kubectl" is not configured to use the cluster. It actually has configured--
+
+29
+00:02:33,340 --> 00:02:44,310
+This "config" is now created. So, that "kubectl" can connect to our newly created vm with Kubernetes.
+
+30
+00:02:44,740 --> 00:02:51,070
+If you don't have the "kubectl" tool yet, have a look at my procedure document, and there's a link for Linux, Mac, and Windows platforms.
+
+31
+00:02:54,970 --> 00:02:58,860
+So, I'm on the Mac platform.
+
+32
+00:02:58,990 --> 00:03:00,890
+So, I will just download this one.
+
+33
+00:03:01,010 --> 00:03:04,140
+This is again a 63 megabytes binary.
+
+34
+00:03:04,150 --> 00:03:05,900
+And, this is the command find tool.
+
+35
+00:03:06,150 --> 00:03:11,470
+You need to download this command line tool first, and then you'll be able to use "kubectl".
+
+36
+00:03:11,470 --> 00:03:16,890
+And, you don't need to do any confirmation anymore, because minikube did this configuration for us.
+
+37
+00:03:16,890 --> 00:03:23,010
+"Kubectl" will take a look at this "~/.kube/config" and will then know that it needs to go to this
+
+38
+00:03:23,020 --> 00:03:30,220
+IP address and this port to connect to the cluster. "Kubectl" is downloaded.
+
+39
+00:03:30,640 --> 00:03:36,930
+So, we are going to do the same thing as we did with minikube, we are going to give it execution permissions,
+
+40
+00:03:37,640 --> 00:03:44,870
+and we are going to move it to "/usr/local/bin" together with minikube. Then, we can execute "kubectl".
+
+41
+00:03:50,650 --> 00:03:54,670
+So, if you just press enter, you see all the comments available.
+
+42
+00:03:54,720 --> 00:03:56,440
+So, "kubectl" is working.
+
+43
+00:03:56,440 --> 00:04:01,830
+So, lets try a few commands, just to see if our cluster is working.
+
+44
+00:04:01,910 --> 00:04:05,600
+First, let's run "kubectl" with the command "run".
+
+45
+00:04:05,650 --> 00:04:13,980
+Run means, run a particular image on the cluster, the name of we going to give this is "hello-minikube".
+
+46
+00:04:15,130 --> 00:04:19,740
+And, the image is going to come from Google and just called echo server.
+
+47
+00:04:19,810 --> 00:04:25,820
+So, for a simple app, we going to put it on port 88, just press enter.
+
+48
+00:04:26,330 --> 00:04:27,400
+It's says, "deployment 'hello-minikube' created".
+
+49
+00:04:27,460 --> 00:04:34,230
+And then, I'm going to use the command "kubectl expose  deployment hello-minikube --type=NodePort".
+
+50
+00:04:37,890 --> 00:04:45,220
+So, this is going to expose this port to our host machine, to our clients, to where I'm typing.
+
+51
+00:04:45,220 --> 00:04:51,100
+Don't worry if you don't understand these commands in detail yet, because I'll be explaining them later in the course.
+
+52
+00:04:51,790 --> 00:04:56,340
+We just want to know what a cluster is we're not, so I am going to press enter.
+
+53
+00:04:56,350 --> 00:04:58,250
+"service 'hello-minikube' exposed"
+
+54
+00:04:58,450 --> 00:05:06,140
+And what I want to know is the URL. You see, "minikube service hello-minikube --url"
+
+55
+00:05:06,150 --> 00:05:15,700
+And this can take some time, because it needs to download this image, this echo server, and this image
+
+56
+00:05:16,120 --> 00:05:21,360
+can already be quite big, because every time you are pulling an image it's a fully contained image,
+
+57
+00:05:21,370 --> 00:05:23,310
+so it includes already operating system,
+
+58
+00:05:23,310 --> 00:05:27,590
+it includes all the dependencies with this echo server.
+
+59
+00:05:30,630 --> 00:05:32,040
+It took longer than expected,
+
+60
+00:05:32,250 --> 00:05:39,120
+but here I have the URL of the service that is not exposed to my host machine, which means I can just
+
+61
+00:05:39,120 --> 00:05:42,290
+use my regular browser to access this URL.
+
+62
+00:05:42,330 --> 00:05:45,450
+The reason why it takes so long, it is because of the download.
+
+63
+00:05:45,450 --> 00:05:47,280
+Right now, I'm on a slow connection.
+
+64
+00:05:47,300 --> 00:05:51,140
+So, if you also have a slow connection, you will see exactly the same thing.
+
+65
+00:05:51,150 --> 00:05:54,270
+It takes some time to download this image.
+
+66
+00:05:54,970 --> 00:05:56,350
+So, let's go to the browser and here you can see this is an echo service.
+
+67
+00:06:01,940 --> 00:06:03,630
+It just shows some things.
+
+68
+00:06:03,650 --> 00:06:08,690
+So, you can do "Test123", then you will see the real path for the "Test123".
+
+69
+00:06:08,690 --> 00:06:09,650
+So, our cluster is working.
+
+70
+00:06:09,740 --> 00:06:14,290
+We can schedule containers on Kubenetes.
+
+71
+00:06:14,360 --> 00:06:18,600
+And it just pulled a container for us with this application on.
+
+72
+00:06:18,920 --> 00:06:20,650
+So, this is it for this lecture.
+
+73
+00:06:20,660 --> 00:06:27,980
+If you want to close your cluster again, if you want to stop your cluster again, you can just type, "minikube stop"
+
+74
+00:06:28,000 --> 00:06:31,990
+And then, it will break down your minikube cluster.
+
+75
+00:06:32,000 --> 00:06:37,280
+So, this is it for this lecture, in a next one hour show it to do exactly the same thing on AWS.
+
+76
+00:06:37,310 --> 00:06:40,510
+So, if you don't want to use minikube, you don't want to use your own PC, you can use Amazon AWS, I will show you how to do that.
+
+77
+00:06:44,720 --> 00:06:50,340
+If you don't want to run it on the AWS, so you can skip that lecture, and go straight to the one after that.
+

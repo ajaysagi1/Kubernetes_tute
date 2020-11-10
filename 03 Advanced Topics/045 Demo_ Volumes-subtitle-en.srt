@@ -1,0 +1,220 @@
+1
+00:00:00,340 --> 00:00:05,520
+In this demo, I'm going to show you how to start using volumes.
+
+2
+00:00:05,620 --> 00:00:07,920
+I'm going to use my kops cluster again.
+
+3
+00:00:08,080 --> 00:00:15,310
+So, I logged in again in my vagrant xenial box. And first you will need to create a volume on AWS.
+
+4
+00:00:15,910 --> 00:00:23,470
+And if you're working with kops, then you must have set up the AWS too, because it was one of the prerequisites.
+
+5
+00:00:23,570 --> 00:00:26,830
+So, I'm going to use the AWS to create a volume.
+
+6
+00:00:26,960 --> 00:00:30,010
+I'm going to use "aws ec2" to create volume.
+
+7
+00:00:30,140 --> 00:00:36,950
+I'm going to create a volume of size 10, in "eu-west-1a". It's going to be general purpose 2 which is just an EBS volume.
+
+8
+00:00:39,380 --> 00:00:45,720
+Make sure that you create your volume in the same zone that your Kubernetes cluster is open up,
+
+9
+00:00:45,890 --> 00:00:48,590
+otherwise it's not going to work.
+
+10
+00:00:48,620 --> 00:00:54,450
+This is the volume ID that you need to select, you are going to replace this.
+
+11
+00:00:54,450 --> 00:00:59,320
+And I'm going to insert this into my "helloworld" with a volume.
+
+12
+00:00:59,590 --> 00:01:03,340
+So, I'm going to replace, I'm going to use this volume ID,
+
+13
+00:01:03,800 --> 00:01:08,110
+I'm going to put it right here,
+
+14
+00:01:08,930 --> 00:01:14,780
+"volumeID" and then this volume ID. And this volume ID is going to be attached to the node that this pod is going to run on.
+
+15
+00:01:15,660 --> 00:01:24,500
+And it could be mounted under "/myvol". Let me first check whether my nodes are running.
+
+16
+00:01:24,500 --> 00:01:33,050
+I have three nodes running and then I am going to launch this deployment "helloworld-deployment" created.
+
+17
+00:01:33,050 --> 00:01:36,410
+"Kubectl get pod", container is creating.
+
+18
+00:01:42,630 --> 00:01:48,090
+It's pulling the image and now the container is created.
+
+19
+00:01:48,380 --> 00:01:53,690
+You have a volume here, "myvolume" which is a persistent disk resource in AWS,
+
+20
+00:01:53,690 --> 00:02:01,330
+"AWSElasticBlockStorage" with a volume ID. So, I should now be able to execute something in this pod.
+
+21
+00:02:11,290 --> 00:02:18,450
+Let me just start "bash" and I have volume "myvol".
+
+22
+00:02:18,710 --> 00:02:24,100
+Let me just write something in "myvol", just to see how it works.
+
+23
+00:02:24,140 --> 00:02:26,000
+I'm going to write "test" in "myvol".
+
+24
+00:02:26,030 --> 00:02:28,720
+"/myvol/myvol.txt"
+
+25
+00:02:29,060 --> 00:02:38,910
+I'm also going to write "test2" in "/test.txt"
+
+26
+00:02:39,290 --> 00:02:44,220
+We have two files, "myvol.txt", "test.txt".
+
+27
+00:02:46,460 --> 00:02:51,880
+And just think about what is going to happen if this pod crashes, because we wrote something in "/",
+
+28
+00:02:51,960 --> 00:02:57,270
+we wrote something in the volume. When our pod goes,
+
+29
+00:02:57,770 --> 00:03:03,580
+well if the node goes, then the pod needs to be rescheduled.
+
+30
+00:03:04,250 --> 00:03:11,360
+So this pod is running on the node with this IP address.
+
+31
+00:03:14,330 --> 00:03:21,590
+So, if you want to test what would happen, if the node would be rescheduled, we could drain a node, which means, we prepare a node to go offline.
+
+32
+00:03:21,590 --> 00:03:29,140
+"kubectl drain", and then the node, and then it's going to start draining the nodes, we are going to use "--force" here.
+
+33
+00:03:35,750 --> 00:03:38,450
+So that the pod is for sure killed. Then I'm going to do "kubectl get pod".
+
+34
+00:03:38,510 --> 00:03:47,750
+And already a new pod is being created.
+
+35
+00:03:48,130 --> 00:03:52,910
+If I describe this one. "Kubectl describe pod", and then the new pod, then you can see that this pod is now attached to another instance.
+
+36
+00:04:02,620 --> 00:04:04,080
+You just have to wait a little bit till the warnings go away.
+
+37
+00:04:06,220 --> 00:04:11,470
+And now the volume is attached to this new node.
+
+38
+00:04:11,560 --> 00:04:19,010
+So, what happened is that this volume detached from the old node and now is reattached to the new node.
+
+39
+00:04:19,240 --> 00:04:25,680
+So, our container has been recreated, but it is still using the same volume.
+
+40
+00:04:25,730 --> 00:04:32,130
+So, let me login again, let me open a shell on our new pod.
+
+41
+00:04:34,580 --> 00:04:43,570
+And, if I take a look in "myvol", I will see that I still have have "myvol.txt", but of course,
+
+42
+00:04:43,570 --> 00:04:46,390
+because this is a new container, I don't have those "test.txt" anymore,
+
+43
+00:04:47,140 --> 00:04:53,800
+because "test.txt" was not saved in the volume, in the container itself,
+
+44
+00:04:54,790 --> 00:05:00,550
+and when the pod gets rescheduled, all the information that has been written on the container disappears.
+
+45
+00:05:00,610 --> 00:05:06,430
+So, when you have a stateful application that needs to write something, then you always need to to use volumes,
+
+46
+00:05:06,430 --> 00:05:14,680
+because then your data will be kept even if the node crashes, or even if the node needs to be rescheduled.
+
+47
+00:05:16,120 --> 00:05:17,910
+And this can happen all the time.
+
+48
+00:05:17,920 --> 00:05:25,150
+Stateful applications you can only use with volumes, or some other mechanism, to save the data not inside the container itself, but using a volume or external services.
+
+49
+00:05:25,210 --> 00:05:33,070
+In lectures, I will show you how Kubernetes can ultimately create those volumes for you.
+
+50
+00:05:33,070 --> 00:05:39,530
+When you're finished, make sure that you remove this volume again.
+
+51
+00:05:39,790 --> 00:05:43,800
+So, this volume needs to be deleted.
+
+52
+00:05:45,460 --> 00:05:51,300
+"aws ec2 delete-volume" with "--volume-id" and then, the volume id.
+
+53
+00:05:52,220 --> 00:05:57,430
+Of course when it is not attached anymore.
+
+54
+00:05:57,490 --> 00:06:00,080
+So, you can only do that when it's detached.
+
+55
+00:06:00,250 --> 00:06:09,100
+So, first you can you need to remove your pod, and if you wait some time, you will be able to detach it.
+

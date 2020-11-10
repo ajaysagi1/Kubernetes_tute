@@ -1,0 +1,56 @@
+1
+00:00:00,300 --> 00:00:03,270
+So what to do when you've finished this course.
+
+2
+00:00:03,450 --> 00:00:06,440
+I have some other courses that might interest you.
+
+3
+00:00:06,780 --> 00:00:10,760
+You can find all my courses at url that is displayed here.
+
+4
+00:00:11,250 --> 00:00:17,850
+The other course I have it might interest you is the "Advanced Kubernetes Course". I've launched the "Advanced Kubernetes Course"
+
+5
+00:00:17,850 --> 00:00:23,480
+in October 2017 and I'll just show you what it covers.
+
+6
+00:00:23,490 --> 00:00:26,150
+It builds upon this Kubernetes course.
+
+7
+00:00:26,190 --> 00:00:32,910
+So, I assume that you did every lecture of this course and then we get started with centralized
+
+8
+00:00:32,970 --> 00:00:38,120
+logging, using elastic search, Fluentd, Kibana, and LogTrail.
+
+9
+00:00:38,190 --> 00:00:46,500
+I didn't cover Authentication using open ID, Authorization using RBAC, Packaging using Helme, the Job
+
+10
+00:00:46,500 --> 00:00:54,260
+Resource, Scaling, Deploying on Kubernetes using Spinnaker, Microservices on Kubernetes using Linkerd,
+
+11
+00:00:54,270 --> 00:01:03,860
+Federation, and Monitoring. And can get this course at this url with this coupon code:
+
+12
+00:01:03,890 --> 00:01:06,180
+BONUS_DEVOPS
+
+13
+00:01:06,260 --> 00:01:09,990
+And here is a list of my other courses that might interest you.
+
+14
+00:01:10,220 --> 00:01:12,710
+You can all take them with the same coupon code.
+

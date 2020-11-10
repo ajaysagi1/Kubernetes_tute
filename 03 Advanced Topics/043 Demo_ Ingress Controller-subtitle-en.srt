@@ -1,0 +1,260 @@
+1
+00:00:00,540 --> 00:00:06,270
+In this demo, I'm going to show you an example of an Ingress Controller.
+
+2
+00:00:06,300 --> 00:00:10,720
+First let me show you how to Ingress Controller works.
+
+3
+00:00:10,890 --> 00:00:16,950
+I'm going to use nginx Ingress Controller, which is an existing one.
+
+4
+00:00:16,990 --> 00:00:18,490
+This is a Replication Controller.
+
+5
+00:00:18,640 --> 00:00:22,700
+So, if this one would crash, it would be automatically relaunched.
+
+6
+00:00:22,750 --> 00:00:29,370
+It's called "nginx-ingress-controller" and it's an image that comes from a Google container.
+
+7
+00:00:29,470 --> 00:00:36,620
+It's a "nginx-ingress-controller" and it's this version here. It's going to check the health.
+
+8
+00:00:36,720 --> 00:00:41,660
+We have a "readinessProbe" to know when the container is ready to be deployed.
+
+9
+00:00:41,660 --> 00:00:48,000
+And there is the "livenessProbe" to periodically check whether our container is still healthy.
+
+10
+00:00:48,010 --> 00:00:55,260
+We are going to specify a pod name, which is our pod name and the namespace, which is "default" in our case, unless
+
+11
+00:00:55,260 --> 00:01:02,530
+you specify another namespace. Don't run this on port 80 and port 443.
+
+12
+00:01:02,710 --> 00:01:10,780
+This Ingress Controller is really working on the standard HTTP port and the HTTPS port. It is going to give these as arguments
+
+13
+00:01:10,780 --> 00:01:13,500
+when it's going to launch the container.
+
+14
+00:01:15,320 --> 00:01:19,760
+So, this the Ingress Controller that you could write yourself even if you want,
+
+15
+00:01:19,760 --> 00:01:21,420
+but we are going to use one that already exists.
+
+16
+00:01:22,430 --> 00:01:27,800
+We are also going to say, at the "default-backend-service" is the "echoheaders-default".
+
+17
+00:01:28,190 --> 00:01:30,920
+And this is a service that I'm going to launch.
+
+18
+00:01:30,920 --> 00:01:37,560
+Traffic will be forwarded to this service, when there is no match, so I'm going to say, "these hosts",
+
+19
+00:01:37,560 --> 00:01:39,770
+I am going to say in my Ingress rules,
+
+20
+00:01:40,110 --> 00:01:42,240
+these are the hosts, "helloworld-v1.example.com", "helloworld-v2.example.com"
+
+21
+00:01:42,250 --> 00:01:52,100
+If those don't match then go to this default service.
+
+22
+00:01:52,120 --> 00:01:53,690
+Let me just, "kubectl create" the Ingress.
+
+23
+00:01:53,740 --> 00:02:10,740
+The object controller, the echo-service, the "helloworld-v1"
+
+24
+00:02:11,520 --> 00:02:14,850
+and the "helloworld-v2"
+
+25
+00:02:14,870 --> 00:02:21,680
+So, these are just services that we can access.
+
+26
+00:02:21,700 --> 00:02:23,870
+This is our "helloworld-v1" app
+
+27
+00:02:23,890 --> 00:02:25,450
+and this is our "helloworld-v2" app.
+
+28
+00:02:25,450 --> 00:02:32,710
+And the only thing that is different between those two is that I am asking for image version 2,
+
+29
+00:02:32,770 --> 00:02:37,350
+and one is just asking for the standard image.
+
+30
+00:02:37,890 --> 00:02:43,520
+Let me check if the pods are up. Yes, they are running now.
+
+31
+00:02:44,460 --> 00:02:46,080
+Let me get the IP address.
+
+32
+00:02:46,180 --> 00:02:52,530
+"minikube ip", which is just going to give me the IP address of my cluster.
+
+33
+00:02:52,950 --> 00:03:00,340
+If you're testing is on AWS you have the IP addresses in s2 console, you just might have to change
+
+34
+00:03:00,340 --> 00:03:04,840
+your security groups to make sure those ports are open.
+
+35
+00:03:04,870 --> 00:03:08,080
+I'm going to "curl" this IP address.
+
+36
+00:03:08,410 --> 00:03:09,910
+What's going to happen then,
+
+37
+00:03:10,480 --> 00:03:12,510
+I'm not specifying any hosts.
+
+38
+00:03:12,610 --> 00:03:18,820
+Those are non-existent hosts, so I cannot just go in my browser and type them in,
+
+39
+00:03:18,820 --> 00:03:20,660
+because they actually don't exist.
+
+40
+00:03:20,860 --> 00:03:24,380
+You could use real world host and you can just use your browser.
+
+41
+00:03:24,600 --> 00:03:29,530
+I'm just going to give an argument to fake that I'm sending that I'm using those hosts.
+
+42
+00:03:29,980 --> 00:03:38,340
+I don't specify any hosts so I'm going to hit this default backend service, "echoheaders-default"
+
+43
+00:03:38,340 --> 00:03:41,240
+and this is just going to give me the HTTP headers.
+
+44
+00:03:41,260 --> 00:03:47,600
+So, "curl" I'm hitting this default service now.
+
+45
+00:03:47,810 --> 00:03:54,980
+Let me now pass the header and let me pass the host, and the host is going to be
+
+46
+00:03:55,330 --> 00:03:56,110
+"helloworld-v1.example.com"
+
+47
+00:03:56,110 --> 00:04:05,250
+This "curl" command has the same effect as going to a real DNS browser.
+
+48
+00:04:06,940 --> 00:04:08,640
+This gives us the "Hello World!".
+
+49
+00:04:08,920 --> 00:04:15,540
+So, our Ingress Controller for us now to my "helloworld-v1" on deployments.
+
+50
+00:04:18,540 --> 00:04:21,110
+Let's now try v2.
+
+51
+00:04:22,270 --> 00:04:25,290
+And what do I get? I'll show it.
+
+52
+00:04:25,720 --> 00:04:26,520
+"Hello world v2!" here.
+
+53
+00:04:26,660 --> 00:04:29,260
+Do you what do I get?
+
+54
+00:04:29,680 --> 00:04:30,370
+"Hello world v2!"
+
+55
+00:04:31,570 --> 00:04:39,010
+Now, our Ingress Controller forwarded us to "Hello world v2!" to my to my second "helloworld".
+
+56
+00:04:39,940 --> 00:04:46,810
+And I'm pointing out to the pods that actually I should point towards the services.
+
+57
+00:04:46,810 --> 00:04:56,320
+So, this is the default one, and this is if we hit "v1" and, this is if we hit "v2", this is just the one from the previous lab.
+
+58
+00:04:56,320 --> 00:04:58,810
+Don't worry about that one.
+
+59
+00:04:58,840 --> 00:05:03,350
+So, that's how the Ingress Controller works, we basically have the capability.
+
+60
+00:05:03,430 --> 00:05:06,340
+It's still in beta now, but it will become stable.
+
+61
+00:05:06,370 --> 00:05:14,120
+We have the capability to just run a load balancer inside our cluster that is going to redirect traffic
+
+62
+00:05:14,120 --> 00:05:21,960
+to the correct host for us, which is a viable alternative if you don't want to run an ELB, or an external
+
+63
+00:05:22,070 --> 00:05:27,440
+AWS from your cloud provider, because those also cost money and don't have all the capabilities that
+
+64
+00:05:27,440 --> 00:05:34,430
+you may be need. Because when you write your own controller you could add all of all you wanted,
+
+65
+00:05:34,430 --> 00:05:37,210
+like Enterprise Authentication if necessary.
+
